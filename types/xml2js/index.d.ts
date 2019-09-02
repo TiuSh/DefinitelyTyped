@@ -7,6 +7,7 @@
 //                 Behind The Math <https://github.com/BehindTheMath>
 //                 Claas Ahlrichs <https://github.com/claasahl>
 //                 Grzegorz Redlicki <https://github.com/redlickigrzegorz>
+//                 Mathieu Masy <https://github.com/tiush>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /// <reference types="node"/>
@@ -14,25 +15,25 @@ import { EventEmitter } from 'events';
 import * as processors from './lib/processors';
 
 export function parseString(xml: convertableToString, callback: (err: Error, result: any) => void): void;
-export function parseString(xml: convertableToString, options: OptionsV2, callback: (err: Error, result: any) => void): void;
+export function parseString(xml: convertableToString, options: ParserOptions, callback: (err: Error, result: any) => void): void;
 
 export const defaults: {
     '0.1': Options;
-    '0.2': OptionsV2;
+    '0.2': Options;
 };
 
 export class Builder {
-    constructor(options?: OptionsV2);
+    constructor(options?: BuilderOptions);
     buildObject(rootObj: any): string;
 }
 
 export class Parser extends EventEmitter {
-    constructor(options?: OptionsV2);
+    constructor(options?: ParserOptions);
     parseString(str: convertableToString, cb?: Function): void;
     reset(): void;
 }
 
-export interface Options {
+export interface ParserOptions {
     async?: boolean;
     attrkey?: string;
     attrNameProcessors?: Array<(name: string) => any>;
@@ -50,6 +51,7 @@ export interface Options {
     mergeAttrs?: boolean;
     normalize?: boolean;
     normalizeTags?: boolean;
+    preserveChildrenOrder?: boolean;
     strict?: boolean;
     tagNameProcessors?: Array<(name: string) => any>;
     trim?: boolean;
@@ -58,24 +60,28 @@ export interface Options {
     xmlns?: boolean;
 }
 
-export interface OptionsV2 extends Options {
-    preserveChildrenOrder?: boolean;
-    rootName?: string;
-    xmldec?: {
-        version: string;
-        encoding?: string;
-        standalone?: boolean;
-    };
+export interface BuilderOptions {
+    allowSurrogateChars?: boolean;
+    attrkey?: string;
+    cdata?: boolean;
+    charkey?: string;
     doctype?: any;
+    headless?: boolean;
     renderOpts?: {
-        pretty?: boolean;
         indent?: string;
         newline?: string;
+        pretty?: boolean;
     };
-    headless?: boolean;
-    chunkSize?: number;
-    cdata?: boolean;
+    rootName?: string;
+    xmldec?: {
+        encoding?: string;
+        standalone?: boolean;
+        version: string;
+    };
 }
+
+export type Options = ParserOptions;
+export type OptionsV2 = Options;
 
 export interface convertableToString {
     toString(): string;
